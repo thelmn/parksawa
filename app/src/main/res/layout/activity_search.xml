@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="teamenum.parksawa.SearchActivity">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:contentInsetLeft="0dp"
+        android:background="@drawable/bottom_border_white_bg">
+        <android.support.v7.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:queryHint="Search parking location"
+            app:submitBackground="@null"
+            app:queryBackground="@null"
+            app:searchHintIcon="@null"
+            app:searchIcon="@null"
+            android:focusable="true"
+            app:iconifiedByDefault="false" />
+    </android.support.v7.widget.Toolbar>
+
+</android.support.constraint.ConstraintLayout>

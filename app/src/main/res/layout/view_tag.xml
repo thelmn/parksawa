@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/buttonTag"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="6dp"
+    android:paddingLeft="14dp"
+    android:paddingRight="14dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:textColor="@color/tag_text"
+    android:background="@drawable/tag_selector"
+    android:text="recent"
+    android:textAllCaps="true"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
