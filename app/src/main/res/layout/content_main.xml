@@ -8,10 +8,14 @@
     tools:context="teamenum.parksawa.MainActivity"
     android:background="@color/creamer">
 
-    <FrameLayout
-        android:id="@+id/fragmentMap"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+   <com.mapbox.mapboxsdk.maps.MapView
+       android:id="@+id/mapViewMain"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       app:mapbox_cameraTargetLat="-1.2920659"
+       app:mapbox_cameraTargetLng="36.82194619999996"
+       app:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+       app:mapbox_cameraZoom="11"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerPlaces"

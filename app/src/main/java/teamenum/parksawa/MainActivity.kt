@@ -1,6 +1,7 @@
 package teamenum.parksawa
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import com.mapbox.mapboxsdk.Mapbox
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import teamenum.parksawa.adapters.ParkingLocationsAdapter
@@ -38,6 +40,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Mapbox.getInstance(this,
+                "pk.eyJ1IjoidGhlbG1uIiwiYSI6ImNqb3ptbjJhODJ2bHozcHJueThjOWFpdzAifQ.irTW--pySvKW_DCbGFYHgw")
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
@@ -52,12 +56,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         recyclerTags.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerTags.adapter = TagsAdapter(arrayListOf("RECENT", "NEAR ME"), this, this)
 
-//        fragmentMap.setOnClickListener { _ -> onTopViewClick() }
         adapter = ParkingLocationsAdapter(parkingSamples, this, this)
-        adapter.viewBeneath = fragmentMap
+        adapter.viewBeneath = mapViewMain
 
         recyclerPlaces.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerPlaces.adapter = adapter
+
+        mapViewMain.onCreate(savedInstanceState)
     }
 
     fun onSearchLocationClick(view: View) {
@@ -89,6 +94,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun onSearchByPinClick(view: View) {
         onTopViewClick()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapViewMain.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapViewMain.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapViewMain.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapViewMain.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapViewMain.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapViewMain.onLowMemory()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        if (outState != null) mapViewMain.onSaveInstanceState(outState)
     }
 
     override fun onBackPressed() {
