@@ -17,7 +17,7 @@
     <style name="AppTheme.AutocompleteTextViewStyle" parent="Widget.AppCompat.AutoCompleteTextView"></style>
 
     <style name="AppTheme.SearchResultTitle" parent="TextAppearance.AppCompat.SearchResult.Title">
-        <item name="android:color">#aaaaaa</item>
+        <item name="color">#aaaaaa</item>
     </style>
 
 

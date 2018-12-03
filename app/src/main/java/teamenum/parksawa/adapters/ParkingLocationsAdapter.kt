@@ -3,87 +3,94 @@ package teamenum.parksawa.adapters
 import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import kotlinx.android.synthetic.main.view_parking.view.*
-import kotlinx.android.synthetic.main.view_top.view.*
+import kotlinx.android.synthetic.main.view_search_or_change.view.*
 import teamenum.parksawa.R
+import teamenum.parksawa.data.ListItem
 import teamenum.parksawa.data.Parking
-import teamenum.parksawa.dpToPx
-import teamenum.parksawa.screenHeightDp
-import teamenum.parksawa.widgets.TransparentTouchView
 
-class ParkingLocationsAdapter(private val items: List<Parking>, private val c: Context, private val listener: OnLocationsListener) :
+class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private val c: Context, private val listener: OnLocationsListener) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var fullView = false
-    var topViewHeight = dpToPx(screenHeightDp()/2)
-        set(value) {
-            field = value
-            notifyItemChanged(0)
-        }
-
-    var viewBeneath: ViewGroup? = null
-        set(value) {
-            field = value
-            notifyItemChanged(0)
-        }
-
-    private val TYPE_TOP_VIEW = 0
-    private val TYPE_LOCATION_VIEW = 1
-
-    init {
-
+    companion object {
+        const val TYPE_SEARCH_HERE = 942
+        const val TYPE_CHANGE_SEARCH = 347
+        const val TYPE_PARKING = 839
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(c)
-        return if (viewType == TYPE_TOP_VIEW) {
-            TopViewHolder(inflater.inflate(R.layout.view_top, parent, false))
-        } else {
-            LocationHolder(inflater.inflate(R.layout.view_parking, parent, false))
+        return when(viewType) {
+            TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH ->
+                SearchOrChangeHolder(inflater.inflate(R.layout.view_search_or_change, parent, false))
+            TYPE_PARKING -> LocationHolder(inflater.inflate(R.layout.view_parking, parent, false))
+            else -> BlankHolder(inflater.inflate(R.layout.blank, parent, false))
         }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0) TYPE_TOP_VIEW else TYPE_LOCATION_VIEW
+        return items[position].VIEW_TYPE
     }
 
     override fun getItemCount(): Int {
-        return items.count()+1 // top view
+        return items.count() // top view
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is TopViewHolder -> {
-                Log.d("ParkingLocationsAdapter", "onBindViewHolder: topview height: $topViewHeight, fullview: $fullView")
-                holder.clickable?.layoutParams?.height = topViewHeight
-                holder.clickable?.viewBeneath = viewBeneath
-                holder.clickable?.transparent = fullView
-                holder.clickable?.setOnClickListener(
-                        if (fullView) null
-                        else View.OnClickListener { _ -> listener.onTopViewClick() }
-                )
+            is SearchOrChangeHolder -> {
+                val state = items[position].VIEW_TYPE
+                holder.text?.text = when (state) {
+                    TYPE_SEARCH_HERE -> c.getString(R.string.search_near_this_location)
+                    TYPE_CHANGE_SEARCH -> c.getString(R.string.pick_a_different_location)
+                    else -> "An error occurred"
+                }
+                holder.clickable?.setOnClickListener { listener.onSearchOrChange() }
             }
             is LocationHolder -> {
-                val item = items[position-1] // top view
-                holder.clickable?.layoutParams?.height = item.height
-                holder.clickable?.setOnClickListener { _ -> listener.onLocationClick(item.name, position-1) }
+                val item = items[position] as? Parking
+                if (item != null) {
+                    holder.clickable?.layoutParams?.height = item.height
+                    holder.clickable?.setOnClickListener { _ -> listener.onLocationClick(item.name, position - 1) }
+                }
             }
         }
     }
 
-    class TopViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val clickable: TransparentTouchView? = view.clickableTop
+    fun setSearchOrChange(item: ListItem?) {
+        if (item != null) {
+            if (items[0].VIEW_TYPE in arrayOf(TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH)) {
+                items[0] = item
+                notifyItemChanged(0)
+            } else {
+                items.add(0, item)
+                notifyItemInserted(0)
+            }
+        } else {
+            if (items[0].VIEW_TYPE in arrayOf(TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH)) {
+                items.removeAt(0)
+                notifyItemRemoved(0)
+            }
+        }
     }
+
+    class SearchOrChangeHolder(view: View): RecyclerView.ViewHolder(view) {
+        val clickable: ConstraintLayout? = view.clickable
+        val text: TextView? = view.text
+    }
+
     class LocationHolder(view: View) : RecyclerView.ViewHolder(view) {
         val clickable: ConstraintLayout? = view.clickableParking
     }
 
+    class BlankHolder(view: View) : RecyclerView.ViewHolder(view)
+
     interface OnLocationsListener {
-        fun onTopViewClick()
+        fun onSearchOrChange()
         fun onLocationClick(item: String, position: Int)
     }
 

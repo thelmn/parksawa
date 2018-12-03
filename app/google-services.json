@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1000916013141",
+    "firebase_url": "https://parksawa-223918.firebaseio.com",
+    "project_id": "parksawa-223918",
+    "storage_bucket": "parksawa-223918.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000916013141:android:56fa9fc1be1c799d",
+        "android_client_info": {
+          "package_name": "teamenum.parksawa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1000916013141-89fi503fimj83n3bt848lsf7tedsaj96.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "teamenum.parksawa",
+            "certificate_hash": "aa643a5155bc5a4dcb7f5460618cc834d868f578"
+          }
+        },
+        {
+          "client_id": "1000916013141-hcp9d4693eqrcg4q9fr4k20fq80u27nq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUSeIvuWqodRq3YoqDwTikenwt4K_MCiU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1000916013141-hcp9d4693eqrcg4q9fr4k20fq80u27nq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

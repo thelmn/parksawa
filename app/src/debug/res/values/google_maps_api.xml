@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Note: This resource is used for the debug build target.
+    -->
+    <string name="google_maps_key" translatable="false" templateMergeStrategy="preserve">
+        AIzaSyBuDs_mfTa8yU3M3_ZYdLOUeYPMgmtWj3w
+    </string>
+</resources>

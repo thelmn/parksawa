@@ -13,6 +13,7 @@ class TagsAdapter(private val items: List<String>, private val c: Context, priva
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var selectedIndex = 0
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(c)
         return TagHolder(inflater.inflate(R.layout.view_tag, parent, false))
