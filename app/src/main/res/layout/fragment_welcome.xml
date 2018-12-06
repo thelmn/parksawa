@@ -45,7 +45,7 @@
         style="@style/Base.Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="NEXT"
+        android:text="@string/next"
         android:textColor="@color/primary_text"
         android:layout_margin="16dp"
         app:layout_constraintEnd_toEndOf="parent"

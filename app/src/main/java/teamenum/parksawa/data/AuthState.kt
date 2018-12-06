@@ -8,4 +8,5 @@ object AuthState {
     const val SIGN_IN = 5
     const val SIGNED_IN = 6
     const val DONE = 7
+    const val HOST_SIGN_IN = 8
 }

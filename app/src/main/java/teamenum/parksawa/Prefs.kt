@@ -14,6 +14,7 @@ object Prefs {
     private const val USER_ID = "USER_ID"
     private const val USER_NAME = "USER_NAME"
     private const val USER_PHONE = "USER_PHONE"
+    private const val VERIFICATION_EMAIL_SENT = "VERIFICATION_EMAIL_SENT"
     
     private lateinit var prefs: SharedPreferences
 
@@ -38,6 +39,10 @@ object Prefs {
     var verificationId: String?
         get() = prefs.getString(USER_VERIFICATION_ID, null)
         set(value) = setValue(USER_VERIFICATION_ID, value)
+
+    var isVerificationEmailSent: Boolean
+        get() = prefs.getBoolean(VERIFICATION_EMAIL_SENT, false)
+        set(value) = setValue(VERIFICATION_EMAIL_SENT, value)
 
     fun setValue(flag: String, value: Any?) {
         val editor = prefs.edit()

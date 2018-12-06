@@ -22,6 +22,10 @@
                 android:icon="@drawable/ic_close_black_24dp"
                 android:title="Logout" />
             <item
+                android:id="@+id/nav_be_host"
+                android:icon="@drawable/ic_local_parking_black_24dp"
+                android:title="Rent out my Parking" />
+            <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_24dp"
                 android:title="Settings" />

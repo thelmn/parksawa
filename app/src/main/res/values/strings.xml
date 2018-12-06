@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="en">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
     <string name="app_name">ParkSawa</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
@@ -42,4 +41,21 @@
     <string name="enter_username">Enter your Userame</string>
     <string name="pick_a_different_location">Pick a different location</string>
     <string name="search_near_this_location">Search near this location</string>
+    <string name="enter_your_email_address">Enter your email address</string>
+    <string name="repeat_your_password">Repeat your password</string>
+    <string name="register">Register</string>
+    <string name="email">email</string>
+    <string name="next">Next</string>
+    <string name="password_too_short">Password too short</string>
+    <string name="password_length_regex">^.{6,}$</string>
+    <string name="not_valid_email">Not a valid email</string>
+    <string name="pass_dont_match">Passwords don\'t match</string>
+    <string name="confirmation_email">Confirmation email.</string>
+    <string name="confirmation_email_sent">A confirmation email was sent to your email address.</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="unable_to_register_acount">Unable to register your account</string>
+
+    <!--Code constants-->
+    <string name="host_claim" translatable="false">parkingHost</string>
+    <string name="create_account">Create account</string>
 </resources>

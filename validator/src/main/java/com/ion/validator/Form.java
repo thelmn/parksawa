@@ -3,6 +3,7 @@ package com.ion.validator;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,11 +21,11 @@ public class Form {
 	/**
 	 * Function adding Validates to our form
 	 * 
-	 * @param validate
-	 *            {@link AbstractValidate} Validate to add
+	 * @param validates
+	 *            {@link AbstractValidate...} Validates to add
 	 */
-	public void addValidates(AbstractValidate validate) {
-		mValidates.add(validate);
+	public void addValidates(AbstractValidate... validates) {
+		mValidates.addAll(Arrays.asList(validates));
 	}
 
 	/**

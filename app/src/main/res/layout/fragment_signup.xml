@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:hint="@string/username"
+            android:singleLine="true"
             android:maxLines="1"
             android:background="@null"/>
 

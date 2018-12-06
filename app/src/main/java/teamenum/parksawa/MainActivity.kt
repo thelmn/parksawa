@@ -244,6 +244,14 @@ class MainActivity : AppCompatActivity(),
 
         navView.menu.findItem(R.id.nav_sign_in).isVisible = !isLoggedIn
         navView.menu.findItem(R.id.nav_sign_out).isVisible = isLoggedIn
+
+        user?.getIdToken(false)?.addOnSuccessListener { result ->
+            val isHost = result.claims[getString(R.string.host_claim)] as? Boolean ?: false
+            Log.d("MainActivity", "onCreate: $isHost")
+            if (isHost) {
+                navView.menu.findItem(R.id.nav_be_host).title = "Manage my Parking Spaces"
+            }
+        }
     }
 
     private fun signOut() {
@@ -332,6 +340,10 @@ class MainActivity : AppCompatActivity(),
         when (item.itemId) {
             R.id.nav_home -> {
 
+            }
+            R.id.nav_be_host -> {
+                startActivity(Intent(this, HostMainActivity::class.java))
+                finish()
             }
             R.id.nav_sign_in -> {
                 startActivityForResult(Intent(this, WelcomeActivity::class.java), REQUEST_USER_SIGN_IN)
