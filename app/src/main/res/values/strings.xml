@@ -58,4 +58,5 @@
     <!--Code constants-->
     <string name="host_claim" translatable="false">parkingHost</string>
     <string name="create_account">Create account</string>
+    <string name="storage_perm_rationale">PackSawa needs to save the photo you provide. Give storage permission</string>
 </resources>

@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/cream"
     tools:context=".HostMainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="3dp"
+        app:title="Parking Manager"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerHostMain"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View
         android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/cream"/>
+        android:background="@color/cream"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

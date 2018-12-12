@@ -33,6 +33,7 @@ import teamenum.parksawa.adapters.ParkingLocationsAdapter
 import teamenum.parksawa.data.AuthState
 import teamenum.parksawa.data.ListItem
 import teamenum.parksawa.data.Parking
+import teamenum.parksawa.data.ViewType
 
 class MainActivity : AppCompatActivity(),
         GoogleMap.OnCameraMoveStartedListener,
@@ -49,6 +50,13 @@ class MainActivity : AppCompatActivity(),
 
         private const val TAG_MAP_FRAGMENT = "teamenum.parksawa.MainActivity.TAG_MAP_FRAGMENT"
         private const val KEY_IS_SEARCH = "teamenum.parksawa.MainActivity.KEY_IS_SEARCH"
+
+        //map defaults
+        val nairobi = LatLng(-1.2833300, 36.8166700)
+        val southEastKenyaBound = LatLng(-5.4,42.0)
+        val northWestKenyaBound = LatLng(4.9, 33.5)
+        val kenyaBounds = LatLngBounds(southEastKenyaBound, northWestKenyaBound)
+        const val zoomLevel = 13f
     }
 
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -59,8 +67,8 @@ class MainActivity : AppCompatActivity(),
 
     private var pinnedMarker: Marker? = null
     private var isSearch = true
-    private val itemSearchHere = object : ListItem { override val VIEW_TYPE = ParkingLocationsAdapter.TYPE_SEARCH_HERE }
-    private val itemChangeSearch = object : ListItem { override val VIEW_TYPE = ParkingLocationsAdapter.TYPE_CHANGE_SEARCH }
+    private val itemSearchHere = object : ListItem { override val VIEW_TYPE = ViewType.SEARCH_HERE }
+    private val itemChangeSearch = object : ListItem { override val VIEW_TYPE = ViewType.CHANGE_SEARCH }
     private val parkingSamples = arrayListOf(
             Parking(1, "Place 1") as ListItem,
             Parking(2, "Place 2"),
@@ -75,10 +83,6 @@ class MainActivity : AppCompatActivity(),
     )
 
     private lateinit var googleMap: GoogleMap
-    private val nairobi = LatLng(-1.2833300, 36.8166700)
-    private val southEastKenyaBound = LatLng(-5.4,42.0)
-    private val northWestKenyaBound = LatLng(4.9, 33.5)
-    private val zoomLevel = 13f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onLocationClick(item: String, position: Int) {
+    override fun onLocationClick(item: String, id: Long) {
         Snackbar.make(content, item, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -245,13 +249,14 @@ class MainActivity : AppCompatActivity(),
         navView.menu.findItem(R.id.nav_sign_in).isVisible = !isLoggedIn
         navView.menu.findItem(R.id.nav_sign_out).isVisible = isLoggedIn
 
-        user?.getIdToken(false)?.addOnSuccessListener { result ->
-            val isHost = result.claims[getString(R.string.host_claim)] as? Boolean ?: false
-            Log.d("MainActivity", "onCreate: $isHost")
-            if (isHost) {
-                navView.menu.findItem(R.id.nav_be_host).title = "Manage my Parking Spaces"
-            }
-        }
+        user?.getIdToken(false)
+                ?.addOnSuccessListener { result ->
+                    val isHost = result.claims[getString(R.string.host_claim)] as? Boolean ?: false
+                    Log.d("MainActivity", "onCreate: $isHost")
+                    if (isHost) {
+                        navView.menu.findItem(R.id.nav_be_host).title = "Manage my Parking Spaces"
+                    }
+                }
     }
 
     private fun signOut() {

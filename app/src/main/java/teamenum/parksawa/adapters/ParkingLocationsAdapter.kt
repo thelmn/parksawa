@@ -12,22 +12,19 @@ import kotlinx.android.synthetic.main.view_search_or_change.view.*
 import teamenum.parksawa.R
 import teamenum.parksawa.data.ListItem
 import teamenum.parksawa.data.Parking
+import teamenum.parksawa.data.ViewType
 
 class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private val c: Context, private val listener: OnLocationsListener) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        const val TYPE_SEARCH_HERE = 942
-        const val TYPE_CHANGE_SEARCH = 347
-        const val TYPE_PARKING = 839
-    }
+    // View Types: SEARCH_HERE, CHANGE_SEARCH, PARKING
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(c)
         return when(viewType) {
-            TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH ->
+            ViewType.SEARCH_HERE, ViewType.CHANGE_SEARCH ->
                 SearchOrChangeHolder(inflater.inflate(R.layout.view_search_or_change, parent, false))
-            TYPE_PARKING -> LocationHolder(inflater.inflate(R.layout.view_parking, parent, false))
+            ViewType.PARKING -> LocationHolder(inflater.inflate(R.layout.view_parking, parent, false))
             else -> BlankHolder(inflater.inflate(R.layout.blank, parent, false))
         }
     }
@@ -45,8 +42,8 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
             is SearchOrChangeHolder -> {
                 val state = items[position].VIEW_TYPE
                 holder.text?.text = when (state) {
-                    TYPE_SEARCH_HERE -> c.getString(R.string.search_near_this_location)
-                    TYPE_CHANGE_SEARCH -> c.getString(R.string.pick_a_different_location)
+                    ViewType.SEARCH_HERE -> c.getString(R.string.search_near_this_location)
+                    ViewType.CHANGE_SEARCH -> c.getString(R.string.pick_a_different_location)
                     else -> "An error occurred"
                 }
                 holder.clickable?.setOnClickListener { listener.onSearchOrChange() }
@@ -54,8 +51,7 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
             is LocationHolder -> {
                 val item = items[position] as? Parking
                 if (item != null) {
-                    holder.clickable?.layoutParams?.height = item.height
-                    holder.clickable?.setOnClickListener { _ -> listener.onLocationClick(item.name, position - 1) }
+                    holder.clickable?.setOnClickListener { _ -> listener.onLocationClick(item.name, item.id) }
                 }
             }
         }
@@ -63,7 +59,7 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
 
     fun setSearchOrChange(item: ListItem?) {
         if (item != null) {
-            if (items[0].VIEW_TYPE in arrayOf(TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH)) {
+            if (items[0].VIEW_TYPE in arrayOf(ViewType.SEARCH_HERE, ViewType.CHANGE_SEARCH)) {
                 items[0] = item
                 notifyItemChanged(0)
             } else {
@@ -71,7 +67,7 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
                 notifyItemInserted(0)
             }
         } else {
-            if (items[0].VIEW_TYPE in arrayOf(TYPE_SEARCH_HERE, TYPE_CHANGE_SEARCH)) {
+            if (items[0].VIEW_TYPE in arrayOf(ViewType.SEARCH_HERE, ViewType.CHANGE_SEARCH)) {
                 items.removeAt(0)
                 notifyItemRemoved(0)
             }
@@ -91,7 +87,7 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
 
     interface OnLocationsListener {
         fun onSearchOrChange()
-        fun onLocationClick(item: String, position: Int)
+        fun onLocationClick(item: String, id: Long)
     }
 
 }

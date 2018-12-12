@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateSpaceActivity"
+    android:background="@color/cream">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="Register a parking space"
+        app:navigationIcon="@drawable/ic_arrow_back_black_24dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_marginTop="0dp">
+
+            <TextView
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/primary_text"
+                android:id="@+id/locationText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Where is the space located?"/>
+
+            <TextView
+                android:id="@+id/locationHint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/secondary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Hint: Zoom the map to street level to provide drivers with an accurate location of your packing."
+                app:layout_constraintTop_toBottomOf="@id/locationText"/>
+
+            <Button
+                android:id="@+id/pickLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_on_map"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/locationHint"/>
+
+            <TextView
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/primary_text"
+                android:id="@+id/spaceNameText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Name of the parking"
+                app:layout_constraintTop_toBottomOf="@id/pickLocation"/>
+
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0dp"
+                android:layout_height="0dp"/>
+
+            <EditText
+                android:id="@+id/spaceNameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:singleLine="true"
+                android:maxLines="1"
+                app:layout_constraintTop_toBottomOf="@id/spaceNameText"/>
+
+            <TextView
+                android:id="@+id/pricing"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pricing"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/spaceNameEdit"/>
+
+            <TextView
+                android:id="@+id/pricingHint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/secondary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Choose the pricing that you offer"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/pricing"/>
+
+            <CheckBox
+                android:id="@+id/perHourOption"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Per hour"
+                android:checked="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/perHourPrice"
+                app:layout_constraintTop_toBottomOf="@id/pricingHint" />
+
+            <EditText
+                android:id="@+id/perHourPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="0 Ksh"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true"
+                app:layout_constraintStart_toEndOf="@id/perHourOption"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/perHourOption"
+                app:layout_constraintBottom_toBottomOf="@id/perHourOption"/>
+
+            <CheckBox
+                android:id="@+id/perDayOption"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Per day"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/perHourOption" />
+
+            <EditText
+                android:id="@+id/perDayPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="0 Ksh"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:enabled="false"
+                app:layout_constraintStart_toStartOf="@id/perHourPrice"
+                app:layout_constraintEnd_toEndOf="@id/perHourPrice"
+                app:layout_constraintTop_toTopOf="@id/perDayOption"
+                app:layout_constraintBottom_toBottomOf="@id/perDayOption"/>
+
+            <CheckBox
+                android:id="@+id/overnightOption"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Overnight"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/perDayOption" />
+
+            <EditText
+                android:id="@+id/overnightPrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="0 Ksh"
+                android:inputType="number"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:enabled="false"
+                app:layout_constraintStart_toStartOf="@id/perHourPrice"
+                app:layout_constraintEnd_toEndOf="@id/perHourPrice"
+                app:layout_constraintTop_toTopOf="@id/overnightOption"
+                app:layout_constraintBottom_toBottomOf="@id/overnightOption"/>
+
+            <TextView
+                android:id="@+id/reservableText"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reservable Online"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/overnightOption"/>
+
+            <CheckBox
+                android:id="@+id/reservableHint"
+                style="@style/Widget.AppCompat.CompoundButton.CheckBox"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/secondary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Allow ParkSawa to manage online reservations and payments"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/reservableText"/>
+
+            <TextView
+                android:id="@+id/photo"
+                style="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/primary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Photo"
+                android:layout_margin="16dp"
+                app:layout_constraintTop_toBottomOf="@id/reservableHint"/>
+
+            <TextView
+                android:id="@+id/photoHint"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/secondary_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Upload a photo of your entrance to guide users"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/photo"/>
+
+            <ImageView
+                android:id="@+id/photoView"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="16dp"
+                android:scaleType="centerCrop"
+                android:background="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photoHint" />
+
+            <ImageButton
+                android:id="@+id/addPhoto"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/transparent"
+                app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
+                app:layout_constraintTop_toTopOf="@id/photoView"
+                app:layout_constraintBottom_toBottomOf="@id/photoView"
+                app:layout_constraintStart_toStartOf="@id/photoView"
+                app:layout_constraintEnd_toEndOf="@id/photoView"
+                android:tint="@color/secondary_text"/>
+
+            <Button
+                android:id="@+id/register"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:textColor="@color/primary_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:text="@string/register"
+                app:layout_constraintTop_toBottomOf="@id/addPhoto"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+</android.support.constraint.ConstraintLayout>

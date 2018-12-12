@@ -21,10 +21,10 @@ class WelcomeActivity : AppCompatActivity(),
         EnterUsernameFragment.OnEnterUsernameFragmentListener,
         HostSignInFragment.OnHostSignInListener, FirebaseAuth.AuthStateListener {
 
-    private lateinit var welcomeFragment: WelcomeFragment
-    private lateinit var enterCodeFragment: EnterCodeFragment
-    private lateinit var enterUsernameFragment: EnterUsernameFragment
-    private lateinit var hostSignInFragment: HostSignInFragment
+    private val welcomeFragment by lazy { WelcomeFragment() }
+    private val enterCodeFragment by lazy { EnterCodeFragment() }
+    private val enterUsernameFragment by lazy { EnterUsernameFragment() }
+    private val hostSignInFragment by lazy { HostSignInFragment() }
 
     private lateinit var auth: FirebaseAuth
 
@@ -64,24 +64,13 @@ class WelcomeActivity : AppCompatActivity(),
 
     private fun switchFragment() {
         val fragment = when(Prefs.authState) {
-            AuthState.INIT, AuthState.SIGN_IN -> {
-                if (!::welcomeFragment.isInitialized) welcomeFragment = WelcomeFragment()
-                welcomeFragment
-            }
-            AuthState.ENTER_CODE -> {
-                if (!::enterCodeFragment.isInitialized) enterCodeFragment = EnterCodeFragment()
-                enterCodeFragment
-            }
-            AuthState.ENTER_USERNAME ->  {
-                if (!::enterUsernameFragment.isInitialized) enterUsernameFragment = EnterUsernameFragment()
-                enterUsernameFragment
-            }
-            AuthState.HOST_SIGN_IN -> {
-                if (!::hostSignInFragment.isInitialized) hostSignInFragment = HostSignInFragment()
-                hostSignInFragment
-            }
+            AuthState.INIT, AuthState.SIGN_IN -> welcomeFragment
+            AuthState.ENTER_CODE -> enterCodeFragment
+            AuthState.ENTER_USERNAME ->  enterUsernameFragment
+            AuthState.HOST_SIGN_IN -> hostSignInFragment
             else -> return
         }
+
         supportFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_enter, R.anim.slide_exit)
                 .replace(R.id.formFrame, fragment)
