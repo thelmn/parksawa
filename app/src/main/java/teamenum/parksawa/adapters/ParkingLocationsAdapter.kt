@@ -14,8 +14,8 @@ import teamenum.parksawa.data.ListItem
 import teamenum.parksawa.data.Parking
 import teamenum.parksawa.data.ViewType
 
-class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private val c: Context, private val listener: OnLocationsListener) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ParkingLocationsAdapter(override val items: ArrayList<ListItem>, private val c: Context, private val listener: OnLocationsListener) :
+        ListItemAdapter(items) {
 
     // View Types: SEARCH_HERE, CHANGE_SEARCH, PARKING
 
@@ -27,14 +27,6 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
             ViewType.PARKING -> LocationHolder(inflater.inflate(R.layout.view_parking, parent, false))
             else -> BlankHolder(inflater.inflate(R.layout.blank, parent, false))
         }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return items[position].VIEW_TYPE
-    }
-
-    override fun getItemCount(): Int {
-        return items.count() // top view
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -52,6 +44,7 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
                 val item = items[position] as? Parking
                 if (item != null) {
                     holder.clickable?.setOnClickListener { _ -> listener.onLocationClick(item.name, item.id) }
+                    holder.textName?.text = item.name
                 }
             }
         }
@@ -81,13 +74,14 @@ class ParkingLocationsAdapter(private val items: ArrayList<ListItem>, private va
 
     class LocationHolder(view: View) : RecyclerView.ViewHolder(view) {
         val clickable: ConstraintLayout? = view.clickableParking
+        val textName: TextView? = view.textName
     }
 
     class BlankHolder(view: View) : RecyclerView.ViewHolder(view)
 
     interface OnLocationsListener {
         fun onSearchOrChange()
-        fun onLocationClick(item: String, id: Long)
+        fun onLocationClick(item: String, id: String)
     }
 
 }

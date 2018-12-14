@@ -15,8 +15,8 @@ import kotlinx.android.synthetic.main.view_title.view.*
 import teamenum.parksawa.R
 import teamenum.parksawa.data.*
 
-class HostMainAdapter(private val items: ArrayList<ListItem>, private val c: Context, private val listener: OnMainHostListener) :
-        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class HostMainAdapter(override val items: ArrayList<ListItem>, private val c: Context, private val listener: OnMainHostListener) :
+        ListItemAdapter(items) {
 
     companion object {
         const val TAG_ADD_SPACE = "teamenum.parksawa.adapters.HostMainAdapter.TAG_ADD_SPACE"
@@ -32,14 +32,6 @@ class HostMainAdapter(private val items: ArrayList<ListItem>, private val c: Con
             ViewType.ATTENDANT -> ParkingAttendantHolder(inflater.inflate(R.layout.view_parking_attendant, parent, false))
             else -> BlankHolder(inflater.inflate(R.layout.blank, parent, false))
         }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return items[position].VIEW_TYPE
-    }
-
-    override fun getItemCount(): Int {
-        return items.count() // top view
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -111,8 +103,8 @@ class HostMainAdapter(private val items: ArrayList<ListItem>, private val c: Con
 
     interface OnMainHostListener {
         fun onButtonClick(tag: String)
-        fun onSpaceClick(id: Long)
-        fun onAttendantClick(id: Long)
+        fun onSpaceClick(id: String)
+        fun onAttendantClick(id: String)
     }
 
 }

@@ -10,12 +10,11 @@ import android.util.Log
 import android.view.View
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.functions.FirebaseFunctions
 import com.school.dialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_host_main.*
 import teamenum.parksawa.adapters.HostMainAdapter
-import teamenum.parksawa.data.Attendant
 import teamenum.parksawa.data.AuthState
 import teamenum.parksawa.data.Parking
 import teamenum.parksawa.data.Title
@@ -28,19 +27,18 @@ class HostMainActivity : AppCompatActivity(), HostMainAdapter.OnMainHostListener
 
     companion object {
         private const val REQUEST_HOST_SIGN_IN = 824
+        private const val REQUEST_CREATE_SPACE = 567
+        private const val REQUEST_CREATE_ATTENDANT = 278
     }
 
+    private lateinit var adapter: HostMainAdapter
     private lateinit var error: MaterialDialog
 
     private val sampleItems = arrayListOf(
             HostMainAdapter.AddButton(HostMainAdapter.TAG_ADD_SPACE),
             HostMainAdapter.AddButton(HostMainAdapter.TAG_ADD_ATTENDANT),
             Title("Spaces"),
-            Parking(123, "Space 1"),
-            Parking(124, "Space 2"),
-            Title("Attendants"),
-            Attendant(123, "User1", "example@mail.com"),
-            Attendant(124, "User2", "example@mail.com")
+            Title("Attendants")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,12 +54,68 @@ class HostMainActivity : AppCompatActivity(), HostMainAdapter.OnMainHostListener
                 .negativeText("Cancel")
                 .build()
 
-        val adapter = HostMainAdapter(sampleItems, this, this)
+        adapter = HostMainAdapter(sampleItems, this, this)
         recyclerHostMain.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerHostMain.adapter = adapter
 
         if (auth.currentUser == null) goToSignIn()
         else testIsHost()
+    }
+
+    private fun syncSpaces() {
+        val user = auth.currentUser
+        user ?: return
+        Snackbar.make(content, "Loading...", Snackbar.LENGTH_LONG).show()
+        db.reference.child("users/${user.uid}/spaces")
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("HostMainActivity", "syncSpaces: $error")
+                        Snackbar.make(content, "Could not fetch your Parking Spaces.", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    override fun onDataChange(snapshotKeys: DataSnapshot) {
+                        if (snapshotKeys.exists()) {
+                            val mapType = object : GenericTypeIndicator<Map<String, Boolean>>(){}
+                            snapshotKeys.getValue(mapType)?.also { keys ->
+                                for ((spaceId, _) in keys) {
+                                    db.reference.child("spaces/$spaceId")
+                                            .addValueEventListener(object : ValueEventListener {
+                                                override fun onCancelled(error: DatabaseError) {
+                                                    Log.e("HostMainActivity", "syncSpaces: $spaceId: $error")
+                                                }
+
+                                                override fun onDataChange(snapshotSpaces: DataSnapshot) {
+                                                    snapshotSpaces.getValue(Parking::class.java)?.also { space ->
+                                                        space.id = spaceId
+                                                        adapter.insert(3, space)
+                                                    }
+                                                }
+                                            })
+                                }
+                            }
+                        }
+                    }
+                })
+    }
+
+    private fun syncSpace(spaceId: String) {
+        db.getReference("spaces/$spaceId")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("HostMainActivity", "syncSpace: $spaceId: $error")
+                        Snackbar.make(content, "Unable to update parking spaces", Snackbar.LENGTH_LONG).show()
+                    }
+
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            Log.d("HostMainActivity", "syncSpace: snap: ${snapshot.value as HashMap<*, *>}")
+                            snapshot.getValue(Parking::class.java)?.also { parking ->
+                                parking.id = spaceId
+                                adapter.insert(3, parking)
+                            }
+                        }
+                    }
+                })
     }
 
     private fun testIsHost(make: Boolean = true) {
@@ -94,6 +148,7 @@ class HostMainActivity : AppCompatActivity(), HostMainAdapter.OnMainHostListener
 
     private fun initUI(){
         isLoading = false
+        syncSpaces()
     }
 
     private fun makeHost() {
@@ -140,21 +195,21 @@ class HostMainActivity : AppCompatActivity(), HostMainAdapter.OnMainHostListener
         }
 
     override fun onButtonClick(tag: String) {
-        val intent = when (tag) {
-            HostMainAdapter.TAG_ADD_SPACE -> Intent(this, CreateSpaceActivity::class.java)
-            HostMainAdapter.TAG_ADD_ATTENDANT -> Intent(this, CreateAttendantActivity::class.java)
-            else -> null
-        }
-        intent?.also {
-            startActivity(it)
+        when (tag) {
+            HostMainAdapter.TAG_ADD_SPACE ->
+                Intent(this, CreateSpaceActivity::class.java)
+                        .also { intent -> startActivityForResult(intent, REQUEST_CREATE_SPACE) }
+            HostMainAdapter.TAG_ADD_ATTENDANT ->
+                Intent(this, CreateAttendantActivity::class.java)
+                        .also { intent -> startActivityForResult(intent, REQUEST_CREATE_ATTENDANT) }
         }
     }
 
-    override fun onSpaceClick(id: Long) {
+    override fun onSpaceClick(id: String) {
         Snackbar.make(content, "Space $id", Snackbar.LENGTH_SHORT).show()
     }
 
-    override fun onAttendantClick(id: Long) {
+    override fun onAttendantClick(id: String) {
         Snackbar.make(content, "Attendant $id", Snackbar.LENGTH_SHORT).show()
     }
 
@@ -168,6 +223,13 @@ class HostMainActivity : AppCompatActivity(), HostMainAdapter.OnMainHostListener
                     error.show()
                 }
             }
+            REQUEST_CREATE_SPACE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    data?.getStringExtra(CreateSpaceActivity.RESULT_SPACE_ID)
+                            ?.also { spaceId -> syncSpace(spaceId) }
+                }
+            }
+            REQUEST_CREATE_ATTENDANT -> {}
         }
     }
 }

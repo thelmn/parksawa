@@ -46,7 +46,6 @@ fun largePic(imageView: ImageView, filePath: String) {
     }
 }
 
-
 // Lazy initialization through delegated properties
 // or just use the builtin (v 1.3.11) synchronized lazy and stop being a schitt
 class Once<T>(private val generator: () -> T) {

@@ -26,6 +26,10 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.android.synthetic.main.nav_header_main.view.*
@@ -59,7 +63,8 @@ class MainActivity : AppCompatActivity(),
         const val zoomLevel = 13f
     }
 
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private var auth = FirebaseAuth.getInstance()
+    private var db = FirebaseDatabase.getInstance()
 
     private var fullView = false
     private lateinit var adapter: ParkingLocationsAdapter
@@ -69,18 +74,7 @@ class MainActivity : AppCompatActivity(),
     private var isSearch = true
     private val itemSearchHere = object : ListItem { override val VIEW_TYPE = ViewType.SEARCH_HERE }
     private val itemChangeSearch = object : ListItem { override val VIEW_TYPE = ViewType.CHANGE_SEARCH }
-    private val parkingSamples = arrayListOf(
-            Parking(1, "Place 1") as ListItem,
-            Parking(2, "Place 2"),
-            Parking(3, "Place 3"),
-            Parking(4, "Place 4"),
-            Parking(5, "Place 5"),
-            Parking(6, "Place 6"),
-            Parking(7, "Place 7"),
-            Parking(8, "Place 8"),
-            Parking(9, "Place 9"),
-            Parking(10, "Place 10")
-    )
+    private val parkingSamples: ArrayList<ListItem> = arrayListOf(object : ListItem { override val VIEW_TYPE: Int = 12})
 
     private lateinit var googleMap: GoogleMap
 
@@ -163,7 +157,7 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun onLocationClick(item: String, id: Long) {
+    override fun onLocationClick(item: String, id: String) {
         Snackbar.make(content, item, Snackbar.LENGTH_SHORT).show()
     }
 
@@ -230,6 +224,37 @@ class MainActivity : AppCompatActivity(),
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pinned)))
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(point))
         // show loading and perform db search at point
+        val loadingSnack = Snackbar.make(content, "Searching...", Snackbar.LENGTH_INDEFINITE)
+        loadingSnack.show()
+        db.reference.child("spaces")
+                .orderByChild("latitude")
+                .startAt(point.latitude-0.2)
+                .endAt(point.latitude+0.2)
+                .addChildEventListener(object : ChildEventListener {
+                    override fun onChildAdded(item: DataSnapshot, p1: String?) {
+                        item.getValue(Parking::class.java)?.also {parking ->
+                            adapter.insert(item = parking)
+                            googleMap.addMarker(MarkerOptions()
+                                    .position(LatLng(parking.latitude, parking.latitude)))
+                        }
+                    }
+
+                    override fun onCancelled(p0: DatabaseError) {
+                        Snackbar.make(content, "No results", Snackbar.LENGTH_SHORT).show()
+                    }
+
+                    override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onChildRemoved(p0: DataSnapshot) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+                })
     }
 
     private fun onSignIn() {

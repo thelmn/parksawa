@@ -11,18 +11,28 @@ import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.ion.validator.Form
 import com.ion.validator.Validate
 import com.ion.validator.validator.NotEmptyValidator
+import com.school.dialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_create_space.*
+import kotlinx.android.synthetic.main.view_parking.view.*
 import pub.devrel.easypermissions.EasyPermissions
+import teamenum.parksawa.data.Parking
+import teamenum.parksawa.data.addSpace
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,6 +42,8 @@ class CreateSpaceActivity : AppCompatActivity(),
         const val REQUEST_PLACE_PICKER = 100
         const val REQUEST_CAMERA = 200
         const val REQUEST_PERMISSION_STORAGE = 300
+
+        const val RESULT_SPACE_ID = "teamenum.parksawa.CreateSpaceActivity.RESULT_SPACE_ID"
     }
 
     private var created = false
@@ -41,7 +53,14 @@ class CreateSpaceActivity : AppCompatActivity(),
     private var selectedPhotoPath: String? = null
     private var selectedPlace: Place? = null
 
-//    val nairobi = LatLng(-1.2833300, 36.8166700)
+    private val db = FirebaseDatabase.getInstance()
+    private val storage = FirebaseStorage.getInstance()
+    private lateinit var user: FirebaseUser
+
+    private lateinit var error: MaterialDialog
+    private lateinit var loading: MaterialDialog
+
+    //    val nairobi = LatLng(-1.2833300, 36.8166700)
     private val bounds = LatLngBounds(LatLng(-1.4, 36.6), LatLng(-1.2, 37.0))
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +68,25 @@ class CreateSpaceActivity : AppCompatActivity(),
         setContentView(R.layout.activity_create_space)
         created = true
 
+        val u = FirebaseAuth.getInstance().currentUser
+        if (u == null) {
+            finish()
+            return
+        }
+        user = u
+        error = MaterialDialog.Builder(this)
+                .title("An error occurred!")
+                .titleColorRes(R.color.primary_text)
+                .contentColorRes(R.color.secondary_text)
+                .negativeText("Cancel")
+                .build()
+        loading = MaterialDialog.Builder(this)
+                .title("Please wait")
+                .titleColorRes(R.color.primary_text)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .canceledOnTouchOutside(false)
+                .build()
 
         pickLocation.setOnClickListener { openPlacePicker() }
         perHourOption.setOnCheckedChangeListener { _, checked -> perHourPrice.isEnabled = checked }
@@ -65,14 +103,16 @@ class CreateSpaceActivity : AppCompatActivity(),
         val perHourValidate = Validate(perHourPrice)
         val perDayValidate = Validate(perDayPrice)
         val overnightValidate = Validate(overnightPrice)
+        val slotsValidate = Validate(slots)
 
         nameValidate.addValidator(notEmptyValidator)
         if (perHourOption.isChecked) perHourValidate.addValidator(notEmptyValidator)
         if (perDayOption.isChecked) perDayValidate.addValidator(notEmptyValidator)
         if (overnightOption.isChecked) overnightValidate.addValidator(notEmptyValidator)
+        slotsValidate.addValidator(notEmptyValidator)
 
         val form = Form()
-        form.addValidates(nameValidate, perHourValidate, perDayValidate, overnightValidate)
+        form.addValidates(nameValidate, perHourValidate, perDayValidate, overnightValidate, slotsValidate)
 
         if (selectedPlace == null) {
             showMessage("Please select the location of your parking.")
@@ -81,6 +121,54 @@ class CreateSpaceActivity : AppCompatActivity(),
 
         if (form.validate()) {
             // do upload
+            loading.show()
+            val pricing = arrayListOf(
+                    if (perHourOption.isChecked) perHourPrice.text.toString().toInt() else -1,
+                    if (perDayOption.isChecked) perDayPrice.text.toString().toInt() else -1,
+                    if (overnightOption.isChecked) overnightPrice.text.toString().toInt() else -1
+            )
+
+            val selectedPhotoName = try { File(selectedPhotoPath).name } catch (e: Exception) {""}
+            val parking = Parking(
+                    name = spaceNameEdit.text.toString(),
+                    owner = user.uid,
+                    latitude = selectedPlace!!.latLng.latitude,
+                    longitude = selectedPlace!!.latLng.longitude,
+                    slotCount = slots.text.toString().toInt(),
+                    reservable = reservableHint.isChecked,
+                    pricing = pricing,
+                    images = arrayListOf(selectedPhotoName ?: "")
+            )
+            val continued = addSpace(db.reference,
+                    storage.reference,
+                    parking,
+                    selectedPhotoPath,
+                    { e ->
+                        loading.dismiss()
+                        Log.e("CreateSpaceActivity", "registerPlace: ", e)
+                        error.setContent("Could not create parking. Error: ${e.localizedMessage}")
+                        error.show()
+                    },
+                    { spaceId, imageUploaded ->
+                        loading.dismiss()
+                        val imageStatus = if (imageUploaded) "1" else "NO"
+                        MaterialDialog.Builder(this)
+                                .title("Success")
+                                .content("Parking space created. $imageStatus image uploaded.")
+                                .titleColorRes(R.color.primary_text)
+                                .contentColorRes(R.color.secondary_text)
+                                .negativeText("Cancel")
+                                .dismissListener {
+                                    intent.putExtra(RESULT_SPACE_ID, spaceId)
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                }
+                                .show()
+                    })
+            if (!continued) {
+                loading.dismiss()
+                showMessage("Something went wrong. Try again")
+            }
         }
     }
 
@@ -97,9 +185,10 @@ class CreateSpaceActivity : AppCompatActivity(),
         if (!storageDir.exists()) {
             if (!storageDir.mkdir()) storageDir = defaultDir
         }
+        val suffix = Random().nextInt(1000)
         return File.createTempFile(
                 "JPEG_${timestamp}_",
-                ".jpg",
+                "$suffix.jpg",
                 storageDir
         ).apply {
             selectedPhotoPath = absolutePath
