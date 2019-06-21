@@ -1,0 +1,62 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
+    <string name="app_name">ParkSawa</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="search_parking_location">Search parking location</string>
+    <string name="settings">Settings</string>
+    <string name="sign_out">Sign out</string>
+    <string name="title_activity_test">TestActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="pick_on_map">Pick on Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="country_code_ke">+254</string>
+    <string name="choose_password">Choose a password</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="enter_your_email_address_optional">Enter your email address (optional)</string>
+    <string name="email_example">username@example.com</string>
+    <string name="sign_in">Sign In</string>
+    <string name="enter_password_for_user">Enter password for %1$s</string>
+    <string name="please_enter_phone">Please enter a phone number</string>
+    <string name="unacceptable_phone">Not an acceptable phone number</string>
+    <string name="join">Join</string>
+    <string name="username">Username</string>
+    <string name="welcome_enter_your_name">Welcome. Enter your Name</string>
+    <string name="verify">Verify</string>
+    <string name="resend_code">Resend Code</string>
+    <string name="change_phone_number">Change phone number</string>
+    <string name="enter_code_sent_to_phone">Enter code sent to %1$s</string>
+    <string name="enter_code">Enter code</string>
+    <string name="enter_username">Enter your Userame</string>
+    <string name="pick_a_different_location">Pick a different location</string>
+    <string name="search_near_this_location">Search near this location</string>
+    <string name="enter_your_email_address">Enter your email address</string>
+    <string name="repeat_your_password">Repeat your password</string>
+    <string name="register">Register</string>
+    <string name="email">email</string>
+    <string name="next">Next</string>
+    <string name="password_too_short">Password too short</string>
+    <string name="password_length_regex">^.{6,}$</string>
+    <string name="not_valid_email">Not a valid email</string>
+    <string name="pass_dont_match">Passwords don\'t match</string>
+    <string name="confirmation_email">Confirmation email.</string>
+    <string name="confirmation_email_sent">A confirmation email was sent to your email address.</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="unable_to_register_acount">Unable to register your account</string>
+
+    <!--Code constants-->
+    <string name="host_claim" translatable="false">parkingHost</string>
+    <string name="create_account">Create account</string>
+    <string name="storage_perm_rationale">PackSawa needs to save the photo you provide. Give storage permission</string>
+</resources>

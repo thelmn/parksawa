@@ -1,0 +1,24 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="autoCompleteTextViewStyle">@style/AppTheme.AutocompleteTextViewStyle</item>
+        <item name="textAppearanceSearchResultTitle">@style/AppTheme.SearchResultTitle</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.AutocompleteTextViewStyle" parent="Widget.AppCompat.AutoCompleteTextView"></style>
+
+    <style name="AppTheme.SearchResultTitle" parent="TextAppearance.AppCompat.SearchResult.Title">
+        <item name="color">#aaaaaa</item>
+    </style>
+
+
+</resources>

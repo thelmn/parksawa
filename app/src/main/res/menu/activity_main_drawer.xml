@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="Home"
+            android:checked="true"/>
+    </group>
+
+    <item android:title="More">
+        <menu>
+            <item
+                android:id="@+id/nav_sign_in"
+                android:icon="@drawable/ic_account_circle_black_24dp"
+                android:title="Sign In or Join" />
+            <item
+                android:id="@+id/nav_sign_out"
+                android:icon="@drawable/ic_close_black_24dp"
+                android:title="Logout" />
+            <item
+                android:id="@+id/nav_be_host"
+                android:icon="@drawable/ic_local_parking_black_24dp"
+                android:title="Rent out my Parking" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Settings" />
+        </menu>
+    </item>
+
+</menu>
